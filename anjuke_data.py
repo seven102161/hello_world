@@ -11,16 +11,20 @@ house_info = json.loads(data)
 df = pd.DataFrame(data=house_info, index=[i+1 for i in range(len(house_info))])
 # print(df['size'])
 
-df['size'] = df['size'].transform(lambda x: x.replace('m²', ''))
+# df['size'] = df['size'].transform(lambda x: x.replace('m²', ''))
 
 df['price'] = df['price'].astype('int64')
-df['size'] = df['size'].astype('int64')
+# df['size'] = df['size'].astype('int64')
 
 df_mean = (df[['type', 'size', 'price']].groupby('type').mean())
 df_mean = df_mean.reset_index()
 print(df_mean)
-print('------------')
-print(df['size'].describe())
+
+print(pd.pivot_table(df, index=['type', 'size'], aggfunc='mean'))
+
+
+# print('------------')
+# print(df['size'].describe())
 
 #
 # plt.figure()

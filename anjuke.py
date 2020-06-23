@@ -57,7 +57,7 @@ def get_html(page):
         pg = str(_i)
 
         params = {
-            'kw': '弘辉名苑',
+            'kw': '绿地康桥新苑',
         }
 
         url_extend = parse.urlencode(params)
