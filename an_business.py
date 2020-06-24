@@ -7,15 +7,22 @@ import json
 
 
 def get_content(html):
-    # global an_house_info
-    #
-    # contents_c = re.compile(r'<div class="list-item" data-trace.*?</div>', re.S)
-    # contents = contents_c.findall(html)
-    # print(contents[2])
-
     soup = BeautifulSoup(html, features='html.parser')
-    tags = soup.select('#listlist > div.layout > div.list-content > div:nth-child(2) > div.item-info > p:nth-child(3) > span:nth-child(2)')
-    print(type(tags))
+    layout = soup.find('div', {'class': "layout"})
+    content = layout.find('div', {'class': "list-content"})
+    items = content.find_all('div', {'class': "list-item"})
+
+    for i in items:
+        item = dict()
+
+        # get url
+        url = i('a')[1].get('href')
+        item['url'] = url
+
+        # get building
+
+
+        # get location
 
 
 def get_html(pg, loc):
