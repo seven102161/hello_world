@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import time
 import random
 import json
+from get_proxy import get_proxy
 
 
 def write_to_json(info):
@@ -43,14 +44,15 @@ def get_info(content):
 
 
 def get_contents(full_list, *url_list):
+    global proxy_list
     global an_house_info
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.13 Safari/537.36',
         'referer': full_list,
     }
+    proxies = random.choice(proxy_list)
     for url in url_list:
-        # print(url)
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, proxies={'http': proxies})
         an_house_info.append(get_info(response.text))
         time.sleep(random.randint(1, 5))
 
@@ -70,83 +72,39 @@ def get_url(html):
 
 
 def get_html(pg, loc):
+    global proxy_list
     base_url = 'https://qd.sydc.anjuke.com/xzl-zu/p'
 
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.13 Safari/537.36',
     }
-    p_list = get_proxy()
-    print(p_list)
 
     for i in range(pg):
         pg = str(i + 1)
-
         params = {
             'kw': loc,
         }
-
         extend_url = parse.urlencode(params)
-
         full_url = base_url + pg + '/?' + extend_url
-        # print(full_url)
-        proxies = random.choice(p_list)
-
+        proxies = random.choice(proxy_list)
         response = requests.get(full_url, headers=headers, proxies={'http': proxies})
         if response.status_code == 200:
-            # print(response.text)
             url_list = get_url(response.text)
             print('page', i, 'url list get')
             get_contents(full_url, *url_list)
-            write_to_json(an_house_info)
         else:
             print('page', i, 'failed')
         time.sleep(5)
 
 
-def get_proxy():
-    global pro
-    ip_list = []
-    port_list = []
-
-    base_url = 'https://www.kuaidaili.com/free/inha/'
-
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36',
-        'Referer': 'https://www.kuaidaili.com/free/inha/1/',
-    }
-
-    for i_ in range(2):
-        full_url = base_url + str(i_ + 1)
-        # print(full_url)
-        response = requests.get(full_url, headers=headers)
-        # print(response.text)
-
-        soup_p = BeautifulSoup(response.text, features='html.parser')
-
-        ips = soup_p.find_all('td', {'data-title': "IP"})
-        for ip in ips:
-            ip_list.append(ip.text)
-
-        ports = soup_p.find_all('td', {'data-title': "PORT"})
-        for port in ports:
-            port_list.append(port.text)
-
-    proxy_list = []
-    for i in range(len(ip_list)):
-        pro = ip_list[i] + ':' + port_list[i]
-        # print(pro)
-        proxy_list.append(pro)
-        # print(proxy_list)
-    return proxy_list
-
-
 def main():
     page = 1
-    loc = '万科中心'
+    loc = '国际创新园'
     get_html(page, loc)
+    write_to_json(an_house_info)
 
 
 if __name__ == '__main__':
-    pro = ''
+    proxy_list = get_proxy()
     an_house_info = []
     main()
