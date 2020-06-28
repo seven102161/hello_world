@@ -1,8 +1,6 @@
-## Welcome to GitHub Pages
+## Welcome to Seven's Page
 
-You can use the [editor on GitHub](https://github.com/seven102161/hello_world/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+There's nothing left, but I will add something as long as I learned how to make it nice.
 
 ### Markdown
 
